@@ -1,0 +1,6 @@
+# apple junk
+.DS_Store
+
+# bundler stuff
+.bundle
+vendor

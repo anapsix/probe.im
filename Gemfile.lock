@@ -1,0 +1,18 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cuba (3.3.0)
+      rack
+    rack (1.6.0)
+    rack-protection (1.5.3)
+      rack
+    useragent (0.10.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cuba
+  rack
+  rack-protection
+  useragent

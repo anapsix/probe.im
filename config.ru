@@ -1,0 +1,3 @@
+require "./probe"
+
+run Cuba
