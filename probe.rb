@@ -31,6 +31,10 @@ end
 
 Cuba.define do
   on get do
+    on "" do
+      results = 'try "/ping" or "/scan/80", see https://github.com/anapsix/probe.im'
+      res.write cli?(req.user_agent) ? results : pre_wrap(results)
+    end
     on "scan/:port" do |port|
       results = scan(req.ip, port).to_s
       res.write cli?(req.user_agent) ? results : pre_wrap(results)
