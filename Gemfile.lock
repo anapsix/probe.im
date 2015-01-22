@@ -3,6 +3,7 @@ GEM
   specs:
     cuba (3.3.0)
       rack
+    net-ping (1.7.6)
     rack (1.6.0)
     rack-protection (1.5.3)
       rack
@@ -13,6 +14,7 @@ PLATFORMS
 
 DEPENDENCIES
   cuba
+  net-ping
   rack
   rack-protection
   useragent

@@ -3,7 +3,10 @@
 require "cuba"
 require "rack/protection"
 require "json"
+require "net/ping"
 require "useragent"
+
+include Net
 
 Cuba.use Rack::Session::Cookie, :secret => "EckVagFiUjodphilImewatpatshUgAngyokQuekeirtenIdNiltUlWed"
 Cuba.use Rack::Protection
@@ -17,7 +20,8 @@ end
 
 def ping(ip,opts={})
   opts[:count] ||= 4
-  return %x[fping -C#{opts[:count]} -p100 -q #{ip} 2>&1 | cut -d: -f2].strip.split.inject(0.0) {|sum,v| sum + v.to_i } / opts[:count]
+  return %x[ping -A -c 1 -n -w 2 #{ip}].split("\n").last[/[0-9.]+/]
+  #return %x[fping -C#{opts[:count]} -p100 -q #{ip} 2>&1 | cut -d: -f2].strip.split.inject(0.0) {|sum,v| sum + v.to_i } / opts[:count]
 end
 
 def cli?(user_agent)
@@ -33,19 +37,19 @@ Cuba.define do
   on get do
     on "" do
       results = 'try "/ping" or "/scan/80", see https://github.com/anapsix/probe.im'
-      res.write cli?(req.user_agent) ? results : pre_wrap(results)
+      res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
     on "scan/:port" do |port|
       results = scan(req.ip, port).to_s
-      res.write cli?(req.user_agent) ? results : pre_wrap(results)
+      res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
     on "scan/:port/:proto" do |port,proto|
       results = scan(req.ip, port, :proto => proto).to_s
-      res.write cli?(req.user_agent) ? results : pre_wrap(results)
+      res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
     on "ping" do
       results = ping(req.ip).to_s     
-      res.write cli?(req.user_agent) ? results : pre_wrap(results)
+      res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
   end
 end
