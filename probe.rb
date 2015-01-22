@@ -19,8 +19,8 @@ def scan(ip, port, opts={})
 end
 
 def ping(ip,opts={})
-  opts[:count] ||= 4
-  return %x[ping -A -c 1 -n -w 2 #{ip}].split("\n").last[/[0-9.]+/]
+  opts[:count] ||= 1
+  return %x[ping -A -c #{opts[:count]} -n -w 2 #{ip}].split("\n").last[/[0-9.]+/]
   #return %x[fping -C#{opts[:count]} -p100 -q #{ip} 2>&1 | cut -d: -f2].strip.split.inject(0.0) {|sum,v| sum + v.to_i } / opts[:count]
 end
 
@@ -48,8 +48,14 @@ Cuba.define do
       res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
     on "ping" do
-      results = ping(req.ip).to_s     
-      res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
+      results = ping(req.ip).to_s
+      q = env['QUERY_STRING'].split('=')
+      j = Hash[*q]['json'] || 'no'
+      if j.nil? || j == '0' || j == 'no' || j == 'false'
+        res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
+      else
+        res.write cli?(req.user_agent) ? { "ping" => results }.to_json + "\n" : pre_wrap({ "ping" => results }.to_json)
+      end
     end
   end
 end
