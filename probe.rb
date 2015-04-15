@@ -5,10 +5,11 @@ require "rack/protection"
 require "json"
 #require "net/ping"
 require "useragent"
+require "securerandom"
 
 #include Net
 
-Cuba.use Rack::Session::Cookie, :secret => "EckVagFiUjodphilImewatpatshUgAngyokQuekeirtenIdNiltUlWed"
+Cuba.use Rack::Session::Cookie, :secret => SecureRandom.base64(42)
 Cuba.use Rack::Protection
 
 def scan(ip, port, opts={})
