@@ -17,7 +17,7 @@ def scan(ip, port, opts={})
   opts[:proto] ||= :tcp
   return "not implemented" unless port.to_i > 0
   return "not implemented" if opts[:proto].to_sym != :tcp
-  return %x[nmap -Pn --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"].strip
+  return %x[nmap -T5 -Pn --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"].strip
 end
 
 def ping(ip,opts={})
