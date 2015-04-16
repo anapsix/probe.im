@@ -34,8 +34,8 @@ def pre_wrap(string)
   return "<pre>#{string}</pre>" 
 end
 
-def auto_wrap(user_agent,results)
-  return cli?(user_agent) ? results + "\n" : pre_wrap(results)
+def auto_wrap(results)
+  return cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
 end
 
 Cuba.define do
@@ -49,23 +49,23 @@ Cuba.define do
       q = env['QUERY_STRING'][/=\S/] ? env['QUERY_STRING'].split('=') : [ "json", nil ]
       j = Hash[*q]['json'] || nil
       if j.nil? || j == '0' || j == 'no' || j == 'false'
-        res.write auto_wrap(req.user_agent,results)
+        res.write auto_wrap(results)
       else
-        res.write auto_wrap(req.user_agent,{ "scan/#{port}" => results }.to_json)
+        res.write auto_wrap({ "scan/#{port}" => results }.to_json)
       end
     end
     on "scan/:port/:proto" do |port,proto|
       results = scan(req.ip, port, :proto => proto).to_s
-      res.write auto_wrap(req.user_agent,results)
+      res.write auto_wrap(results)
     end
     on "ping" do
       results = ping(req.ip).to_s
       q = env['QUERY_STRING'][/=\S/] ? env['QUERY_STRING'].split('=') : [ "json", nil ]
       j = Hash[*q]['json'] || nil
       if j.nil? || j == '0' || j == 'no' || j == 'false'
-        res.write auto_wrap(req.user_agent,results)
+        res.write auto_wrap(results)
       else
-        res.write auto_wrap(req.user_agent,{ "ping" => results }.to_json)
+        res.write auto_wrap({ "ping" => results }.to_json)
       end
     end
   end
