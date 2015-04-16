@@ -26,7 +26,7 @@ def ping(ip,opts={})
 end
 
 def cli?(user_agent)
-	return true if UserAgent.parse(user_agent).browser =~ /(wget)|(curl)/i
+  return true if UserAgent.parse(user_agent).browser =~ /(wget)|(curl)/i
   return false
 end
 
@@ -40,7 +40,13 @@ end
 
 Cuba.define do
   on get do
-    on "" do
+    # /favicon.ico
+    on "favicon.ico" do
+      res.status = 404
+      res.write "#### 404 ####"
+      res.finish
+    end
+    on root do
       results = 'try "/ping[?json=1]" or "/scan/80", see https://github.com/anapsix/probe.im'
       res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
