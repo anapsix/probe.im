@@ -17,7 +17,7 @@ def scan(ip, port, opts={})
   opts[:proto] ||= :tcp
   return "not implemented" unless port.to_i > 0
   return "not implemented" if opts[:proto].to_sym != :tcp
-  return %x[nmap -Pn --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"]
+  return %x[nmap -Pn --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"].strip
 end
 
 def ping(ip,opts={})
@@ -51,8 +51,18 @@ Cuba.define do
       results = 'try "/ping[?json=1]" or "/scan/80", see https://github.com/anapsix/probe.im'
       res.write cli?(req.user_agent) ? results + "\n" : pre_wrap(results)
     end
+    on "scan/:port/:proto" do |port,proto|
+      results = scan(req.ip, port, :proto => proto).to_s.strip
+      q = env['QUERY_STRING'][/=\S/] ? env['QUERY_STRING'].split('=') : [ "json", nil ]
+      j = Hash[*q]['json'] || nil
+      if j.nil? || j == '0' || j == 'no' || j == 'false'
+        res.write auto_wrap(results)
+      else
+        res.write auto_wrap({ "scan/#{port}/#{proto}" => results }.to_json)
+      end
+    end
     on "scan/:port" do |port|
-      results = scan(req.ip, port).to_s.chomp
+      results = scan(req.ip, port).to_s.strip
       q = env['QUERY_STRING'][/=\S/] ? env['QUERY_STRING'].split('=') : [ "json", nil ]
       j = Hash[*q]['json'] || nil
       if j.nil? || j == '0' || j == 'no' || j == 'false'
@@ -60,10 +70,6 @@ Cuba.define do
       else
         res.write auto_wrap({ "scan/#{port}" => results }.to_json)
       end
-    end
-    on "scan/:port/:proto" do |port,proto|
-      results = scan(req.ip, port, :proto => proto).to_s
-      res.write auto_wrap(results)
     end
     on "ping" do
       results = ping(req.ip).to_s
