@@ -1,7 +1,7 @@
 PROBE.im
 ========
 
-Probe.im is a simple "scan me" type service.  
+[Probe.im](http://probe.im/ping?json=1) is a simple "scan me" type service.  
 It pings you back and displays your latency or scans requested port and reports it's status (closed, filtered, opened).
 
 #### Usage Example
