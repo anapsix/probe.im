@@ -21,8 +21,8 @@ end
 
 def ping(ip,opts={})
   opts[:count] ||= 1
-  return %x[ping -A -c #{opts[:count]} -n -w 2 #{ip}].split("\n").last[/[0-9.]+/]
-  #return %x[fping -C#{opts[:count]} -p100 -q #{ip} 2>&1 | cut -d: -f2].strip.split.inject(0.0) {|sum,v| sum + v.to_i } / opts[:count]
+  #return %x[ping -A -c #{opts[:count]} -n -w 2 #{ip}].split("\n").last[/[0-9.]+/]
+  return %x[fping -C#{opts[:count]} -p50 -q #{ip} 2>&1 | cut -d: -f2].strip.split.inject(0.0) {|sum,v| sum + v.to_i } / opts[:count]
 end
 
 def cli?(user_agent)

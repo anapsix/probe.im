@@ -6,7 +6,7 @@ It pings you back and displays your latency or scans requested port and reports 
 
 #### Usage Example
 
-    /ping         returns latency
+    /ping         returns latency in _ms_, or "0.0" if unreachable
     /scan/80      returns status of *port* 80/tcp as opened, filtered or closed
     /scan/80/tcp  returns status of *port* 80/tcp as opened, filtered or closed
 
