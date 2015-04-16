@@ -15,8 +15,9 @@ Cuba.use Rack::Protection
 def scan(ip, port, opts={})
   opts[:type]  ||= :simple
   opts[:proto] ||= :tcp
+  return "not implemented" unless port.to_i > 0
   return "not implemented" if opts[:proto].to_sym != :tcp
-  return %x[nmap --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"]
+  return %x[nmap -Pn --reason -p #{port} #{ip} | egrep -o "open|closed|filtered"]
 end
 
 def ping(ip,opts={})
