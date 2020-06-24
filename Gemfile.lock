@@ -3,7 +3,7 @@ GEM
   specs:
     cuba (3.3.0)
       rack
-    rack (1.6.12)
+    rack (2.1.4)
     rack-protection (1.5.5)
       rack
     useragent (0.10.0)
